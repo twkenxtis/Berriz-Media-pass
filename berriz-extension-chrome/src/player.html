@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title data-i18n="title">Berriz Player</title>
+    <link rel="stylesheet" href="css/plyr.css" />
+    <link rel="stylesheet" href="css/player.css" />
+  </head>
+  <body>
+    <div id="player-container">
+      <video id="player" controls playsinline></video>
+    </div>
+    <div id="error" class="error hidden" data-i18n="error"></div>
+    <script src="js/lib/plyr.polyfilled.min.js"></script>
+    <script src="js/lib/hls.min.js"></script>
+    <script src="js/lib/dash.all.min.js"></script>
+    <script src="js/player.js"></script>
+  </body>
+</html>

@@ -1,0 +1,62 @@
+{
+    "manifest_version": 3,
+    "name": "Berriz - I want watch video on PC",
+    "version": "1.0",
+    "description": "Extracts and plays media URLs from Berriz live replay and media content pages.",
+    "icons": {
+        "32": "assets/icons/berry32.png",
+        "128": "assets/icons/berry256.png"
+    },
+    "action": {
+        "default_popup": "src/popup.html",
+        "default_icon": {
+            "32": "assets/icons/berry32.png",
+            "128": "assets/icons/berry256.png"
+        }
+    },
+    "permissions": [
+        "cookies",
+        "tabs",
+        "storage",
+        "activeTab",
+        "declarativeNetRequest"
+    ],
+    "host_permissions": [
+        "https://berriz.in/*",
+        "https://svc-api.berriz.in/*",
+        "https://statics.berriz.in/*"
+    ],
+    "background": {
+        "service_worker": "background.js"
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "https://*.berriz.in/*/live/replay/*",
+                "https://*.berriz.in/*/media/content/*"
+            ],
+            "js": [
+                "content.js"
+            ]
+        }
+    ],
+    "web_accessible_resources": [
+        {
+            "resources": [
+                "src/player.html",
+                "src/css/*.css",
+                "src/js/player.js",
+                "src/js/lib/*.js",
+                "src/lang/*.json",
+                "assets/icons/berry32_disabled.png",
+                "assets/icons/berry256_disabled.png"
+            ],
+            "matches": [
+                "https://*.berriz.in/*"
+            ]
+        }
+    ],
+    "content_security_policy": {
+        "extension_pages": "script-src 'self'; object-src 'self'"
+    }
+}

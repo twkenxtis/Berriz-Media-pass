@@ -1,0 +1,443 @@
+body {
+  width: 7400px;
+  max-width: 780px;
+  padding: 13px; /* 增加整體留白 */
+  font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif; /* 保持通用字體 */
+  background: linear-gradient(135deg, #f0f3f8, #e6e9ef); /* 柔和的淺色背景漸變 */
+  color: #333; /* 主體文字顏色改為深灰 */
+  margin: 0;
+  overflow-x: hidden;
+  box-sizing: border-box; /* 確保 padding 不增加寬度 */
+}
+
+.container {
+  max-width: 100%;
+  background-color: #ffffff; /* 容器背景為純白 */
+  border-radius: 12px; /* 更大的圓角，提昇現代感 */
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08); /* Naver 風格的柔和深陰影 */
+  padding: 25px; /* 內部留白 */
+}
+
+/* --- 標題區塊 --- */
+.header-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px; /* 更多間距 */
+    padding-bottom: 1px; /* 與下方內容分隔 */
+    border-bottom: 1px solid #eee; /* 更淺的分隔線 */
+}
+
+h1 {
+  font-size: 20px; /* 標題字體更大 */
+  color: #555; /* 標題顏色改為深灰 */
+  margin: 0;
+  font-weight: 600; /* 更粗的字體 */
+  text-shadow: none; /* 移除文字陰影，追求扁平化 */
+}
+
+.media-count {
+    font-size: 15px;
+    color: #888; /* 計數顏色更柔和 */
+    margin-left: 10px;
+    font-weight: normal;
+}
+
+h3 {
+  font-size: 14px;
+  color: #666; /* 小標題顏色調整 */
+  margin: 7px 0 8px; /* 更多垂直間距 */
+  font-weight: 500;
+  text-shadow: none;
+}
+
+/* --- 狀態訊息 (更清晰的背景與圓角) --- */
+.status, .error, .warning {
+  font-size: 18px;
+  padding: 7px; /* 更多內邊距 */
+  border-radius: 8px; /* 更大的圓角 */
+  text-align: center;
+  margin-bottom: 15px;
+  opacity: 1;
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* 柔和的陰影 */
+  transition: opacity 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.status {
+  background-color: #e0f2f7; /* 淺藍色背景 */
+  color: #2196f3; /* 藍色文字 */
+  border: 1px solid #b3e5fc; /* 淺藍邊框 */
+}
+
+.error {
+  background-color: #ffebee; /* 淺紅色背景 */
+  color: #ef5350; /* 紅色文字 */
+  border: 1px solid #ef9a9a; /* 淺紅邊框 */
+}
+
+.warning {
+  background-color: #fffde7; /* 淺黃色背景 */
+  color: #ffb300; /* 黃色文字 */
+  border: 1px solid #ffe082; /* 淺黃邊框 */
+}
+
+.hidden {
+  opacity: 0;
+  height: 0;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  overflow: hidden;
+  pointer-events: none;
+  transition: opacity 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), height 0.2s cubic-bezier(0.25, 0.8, 0.25, 1), padding 0.2s cubic-bezier(0.25, 0.8, 0.25, 1), margin 0.2s cubic-bezier(0.25, 0.8, 0.25, 1), border 0.2s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* --- 媒體項目 (卡片式設計與更輕柔的陰影) --- */
+.media-item {
+  margin-bottom: 4px; 
+  background-color: #ffffff;
+  border-radius: 5px; /* 更大的圓角 */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); /* Naver 風格的柔和陰影 */
+  overflow: hidden;
+  transition: box-shadow 0.2s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.2s cubic-bezier(0.25, 0.8, 0.25, 1); /* 提昇 Hover 效果 */
+}
+
+.media-item:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12); /* Hover 時陰影更深 */
+    transform: translateY(-2px); /* 輕微上浮 */
+}
+
+/* --- 媒體標題 (更清晰的背景與底部線) --- */
+.media-header {
+  padding: 12px 15px; /* 更多內邊距 */
+  background-color: #f7f9fb; /* 淺色背景 */
+  cursor: pointer;
+  font-size: 16px; /* 字體稍大 */
+  color: #444; /* 文字顏色更深 */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #e0e0e0; /* 細分隔線 */
+  transition: background-color 0.2s cubic-bezier(0.25, 0.8, 0.25, 1), color 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.media-header:hover {
+  background-color: #eff2f6; /* Hover 時淺色變深 */
+  color: #222;
+}
+
+/* --- 展開/收起箭頭 (更簡潔的圖標) --- */
+.media-header.collapsed::before {
+  content: "›"; /* 更簡潔的箭頭符號 */
+  font-size: 18px; /* 稍大 */
+  font-weight: bold;
+  margin-right: 5px;
+  transform: rotate(90deg); /* 初始旋轉，讓其指向右 */
+  transition: transform 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.media-header::before {
+  content: "›"; /* 展開時也是同樣的箭頭 */
+  font-size: 18px;
+  font-weight: bold;
+  margin-right: 5px;
+  transform: rotate(0deg); /* 初始不旋轉，指向下 */
+  transition: transform 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+.media-header.collapsed::before {
+    transform: rotate(90deg); /* 收起時指向右 */
+}
+
+
+.media-content {
+  padding: 15px; /* 更多內邊距 */
+  background-color: #fdfdfd; /* 更淺的背景 */
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  overflow: hidden;
+  border-top: none; /* 移除頂部邊框，讓背景色自然區分 */
+}
+
+.media-content.hidden {
+    height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    opacity: 0;
+    transform: translateY(-10px); /* 藏得更深 */
+}
+
+/* --- 流媒體區塊 (背景色塊區分，無邊框) --- */
+.stream-section {
+  margin-bottom: 15px;
+  padding: 15px;
+  background-color: #ccd9e5; /* 淺色背景，取代漸變和陰影 */
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px; /* 更多間距 */
+  box-shadow: none; /* 移除陰影，依靠背景色塊區分 */
+  transition: background-color 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.stream-section:hover {
+    background-color: #eff2f6; /* Hover 時淺色變深 */
+}
+
+.stream-url {
+  margin: 0; /* 移除外邊距，由 gap 控製 */
+  padding: 12px;
+  background-color: #f2f2f2; /* 純白背景 */
+  border-radius: 8px;
+  font-size: 13px;
+  word-break: break-all;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100%; /* 擴展至父容器寬度 */
+  box-sizing: border-box;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); /* 更輕的陰影 */
+  transition: transform 0.15s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.15s cubic-bezier(0.25, 0.8, 0.25, 1), background-color 0.15s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.stream-url:hover {
+    transform: translateY(-3px); /* 輕微上浮 */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); /* 陰影更深 */
+    background-color: #fcfcfc;
+}
+
+.stream-url a {
+  color: #4285f4; /* 藍色鏈接 */
+  text-decoration: none;
+  width: 65%;
+  text-align: left;
+  margin-bottom: 8px;
+  transition: color 0.15s cubic-bezier(0.25, 0.8, 0.25, 1);
+  font-weight: 500;
+}
+
+.stream-url a:hover {
+  text-decoration: underline;
+  color: #1a73e8; /* 藍色加深 */
+}
+
+.variants {
+  margin-top: 10px;
+  padding-left: 0px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* --- 所有按鈕 (更輕量化、現代感的設計) --- */
+.toggle-variants,
+.action-button:not(.delete-item) {
+    padding: 10px 20px; /* 更多內邊距 */
+    border: none;
+    border-radius: 8px; /* 更大的圓角 */
+    color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+    background: #6a1b9a; /* 使用統一的紫色，避免過多漸變 */
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1); /* 柔和陰影 */
+    transition: background-color 0.2s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.15s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+    width: 190px; /* 稍微寬一些 */
+    max-width: 100%;
+    text-align: center;
+    display: block;
+    margin: 0 auto;
+    font-weight: 500;
+}
+
+.toggle-variants:hover,
+.action-button:not(.delete-item):hover {
+    transform: translateY(-3px); /* 更明顯的上浮 */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15); /* 陰影更深 */
+    background-color: #7b2ca0; /* Hover 時顏色加深 */
+}
+
+.toggle-variants:active,
+.action-button:not(.delete-item):active {
+    transform: translateY(0) scale(0.98); /* 輕微按壓感 */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+
+.toggle-variants {
+  background-color: #6a1b9a; /* 紫色 */
+}
+
+.toggle-variants:hover {
+  background-color: #7b2ca0;
+}
+
+.action-button.copy {
+  background-color: #8e24aa; /* 紫色 */
+}
+
+.action-button.copy:hover {
+  background-color: #9c27b0;
+}
+
+.action-button.online {
+  background-color: #d81b60; /* 洋紅色 */
+}
+
+.action-button.online:hover {
+  background-color: #e92e7c;
+}
+
+.action-button.potplayer {
+  background-color: #8e24aa;
+}
+
+.action-button.potplayer:hover {
+  background-color: #9c27b0;
+}
+
+.action-button.clear {
+  display: block;
+  margin: 20px auto 0; /* 更多間距 */
+  padding: 12px 25px; /* 更多內邊距 */
+  background-color: #ef5350; /* 紅色 */
+  width: 160px; /* 稍寬 */
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+.action-button.clear:hover {
+  background-color: #e53935;
+}
+
+.refresh-container {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.action-button.refresh {
+  background-color: #2196f3; /* 藍色 */
+  padding: 12px 25px;
+  font-size: 15px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px; /* 圖標與文字間距 */
+  border-radius: 8px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+.action-button.refresh:hover {
+  background-color: #1976d2;
+}
+
+/* --- 單個項目刪除按鈕 (更簡潔的設計) --- */
+.action-button.delete-item {
+    background-color: #bdbdbd; /* 柔和的灰色 */
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 30px; /* 稍大 */
+    height: 30px; /* 稍大 */
+    font-size: 18px; /* 圖標更大 */
+    line-height: 1;
+    padding: 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* 柔和陰影 */
+    transition: background-color 0.15s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.1s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.15s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.action-button.delete-item:hover {
+    background-color: #f44336; /* Hover 時變紅色 */
+    transform: scale(1.1);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+}
+
+.action-button.delete-item:active {
+    transform: scale(0.95);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+/* --- 擴展啟用開關部分 (輕量卡片風格) --- */
+.options-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    background-color: #ffffff;
+    padding: 15px 20px; /* 更多內邊距 */
+    border-radius: 10px; /* 更大圓角 */
+    color: #555;
+    font-size: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); /* 柔和陰影 */
+    transition: box-shadow 0.2s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+.options-section:hover {
+    transform: translateY(-2px); /* 輕微上浮 */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12); /* 陰影更深 */
+}
+
+.options-section label {
+    margin-right: 15px; /* 更多間距 */
+    flex-shrink: 0;
+    font-weight: 500;
+}
+
+/* The switch - the box around the slider (Naver 風格開關) */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 48px; /* 稍大 */
+    height: 28px; /* 稍大 */
+    margin-right: 10px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* The slider */
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc; /* 淺灰色關閉狀態 */
+    transition: .3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    border-radius: 28px; /* 更圓潤 */
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.1); /* 柔和內陰影 */
+}
+
+/* The slider knob */
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 22px; /* 配合滑塊大小 */
+    width: 22px; /* 配合滑塊大小 */
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* 精緻的滑塊陰影 */
+}
+
+input:checked + .slider {
+    background-color: #6a1b9a; /* 開啟時使用紫色，與按鈕保持一致 */
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px #6a1b9a, inset 0 1px 3px rgba(0,0,0,0.1);
+}
+
+input:checked + .slider:before {
+    transform: translateX(20px); /* 調整移動距離 */
+}
