@@ -1,0 +1,73 @@
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #1e1e2e;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  overflow: auto; /* 允許捲動 */
+}
+
+#player-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+  padding: 10px;
+  box-sizing: border-box;
+  background-color: #000; /* 黑邊背景 */
+}
+
+#player {
+  width: 100%;
+  max-width: 100%; /* 最大寬度限制 */
+  max-height: 100vh; /* 保留空間給控制列 */
+  object-fit: contain; /* 保持比例，接受黑邊 */
+  background-color: #000;
+  border-radius: 8px;
+}
+
+/* 確保 Plyr 控制列可見 */
+.plyr {
+  width: 100%;
+  height: auto;
+}
+
+.plyr__controls {
+  background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.7));
+  padding: 10px;
+}
+
+.error {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #333;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 14px;
+  z-index: 1000;
+  max-width: 80%;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.hidden {
+  display: none;
+}
+
+@media screen and (max-width: 768px) {
+  #player-container {
+    padding: 5px;
+  }
+
+  #player {
+    max-height: 85vh; /* 小螢幕保留更多控制空間 */
+  }
+
+  .error {
+    font-size: 12px;
+    padding: 8px 15px;
+  }
+}

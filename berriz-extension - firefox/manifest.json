@@ -1,0 +1,63 @@
+{
+    "manifest_version": 2,
+    "name": "Berriz - I want watch video on PC",
+    "version": "1.0",
+    "description": "Extracts and plays media URLs from Berriz live replay and media content pages.",
+    "icons": {
+        "32": "assets/icons/berry32.png",
+        "128": "assets/icons/berry256.png",
+        "512": "assets/icons/berry256.png"
+    },
+    "browser_action": {
+        "default_popup": "src/popup.html",
+        "default_icon": {
+            "32": "assets/icons/berry32.png",
+            "128": "assets/icons/berry256.png",
+            "512": "assets/icons/berry256.png"
+        }
+    },
+    "permissions": [
+        "cookies",
+        "tabs",
+        "https://berriz.in/*",
+        "https://svc-api.berriz.in/*",
+        "https://statics.berriz.in/*",
+        "webRequest",
+        "webRequestBlocking",
+        "storage",
+        "activeTab",
+        "declarativeNetRequest"
+    ],
+    "background": {
+        "scripts": [
+            "background.js"
+        ],
+        "persistent": false
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "https://*.berriz.in/*/live/replay/*",
+                "https://*.berriz.in/*/media/content/*"
+            ],
+            "js": [
+                "content.js"
+            ]
+        }
+    ],
+    "web_accessible_resources": [
+        "src/player.html",
+        "src/css/*.css",
+        "src/js/player.js",
+        "src/js/lib/*.js",
+        "src/lang/*.json",
+        "assets/icons/berry32_disabled.png",
+        "assets/icons/berry256_disabled.png"
+    ],
+    "content_security_policy": "script-src 'self'; object-src 'self';",
+    "browser_specific_settings": {
+        "gecko": {
+            "id": "ken8902026@gmail.com"
+        }
+    }
+}

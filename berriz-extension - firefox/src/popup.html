@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+   
+  <head>
+       
+    <meta charset="UTF-8" />
+       
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+       
+    <title data-i18n="title">I want watch Berriz</title>
+       
+    <link rel="stylesheet" href="css/popup.css" />
+     
+  </head>
+   
+  <body>
+       
+    <div class="container">
+           
+      <div class="header-section">
+               
+        <h1 data-i18n="title">I want watch Berriz</h1>
+                <span id="media-count" class="media-count hidden"></span>      
+      </div>
+
+           
+      <div class="options-section">
+               
+        <label class="switch">
+                    <input type="checkbox" id="toggle-extension-active" />      
+              <span class="slider round"></span>        
+        </label>
+               
+        <span data-i18n="extension_active_label">Enable Extension</span>      
+      </div>
+
+           
+      <div id="status" class="status" data-i18n="checking">Checking...</div>
+           
+      <div id="error" class="error hidden"></div>
+           
+      <div id="refresh-container" class="refresh-container hidden">
+               
+        <button
+          id="refresh-button"
+          class="action-button refresh"
+          data-i18n="refresh"
+        >
+                    🔄 Refresh Page        
+        </button>
+             
+      </div>
+           
+      <div id="media-list"></div>
+           
+      <button
+        id="clear-list"
+        class="action-button clear"
+        data-i18n="clear_list"
+      >
+                Clear List      
+      </button>
+         
+    </div>
+       
+    <script src="js/popup.js"></script>
+     
+  </body>
+</html>
