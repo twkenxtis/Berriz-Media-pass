@@ -12,7 +12,7 @@ A browser extension to fix and enable media playback for [Berriz](https://berriz
 
 ## 🖼️ Demo Screenshots｜示範畫面
 
-| Chrome Popup | Video Selection | Firefox 播放畫面 | IVE 線上播放 |
+| Chrome Popup | Video Selection | Firefox Screen shot | LIVE Player |
 |--------------|------------------|------------------|----------------|
 | ![1](demo/chrome_1.png) | ![2](demo/chrome_show_list.png) | ![3](demo/firefox_ive_media1.png) | ![4](demo/iu_online_play.png) |
 
