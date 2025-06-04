@@ -3,10 +3,8 @@
 A browser extension to fix and enable media playback for [Berriz](https://berriz.in) on PC.  
 一個用於在電腦上修復並啟用 [Berriz](https://berriz.in) 媒體播放的瀏覽器擴充功能。
 
-<video controls width="720" poster="demo/preview.jpg">
-  <source src="https://raw.githubusercontent.com/twkenxtis/Berriz-Media-pass/main/demo/2025-06-04_17-02-01.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
+### Watch DEMO on Youtube
+[![IDEMO](https://img.youtube.com/vi/_0-SOj9Z_U4/maxresdefault.jpg)](https://www.youtube.com/watch?v=_0-SOj9Z_U4)
 
 ---
 
