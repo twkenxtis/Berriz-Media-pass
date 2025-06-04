@@ -1,7 +1,7 @@
 # Berriz-Media-pass
 
 A browser extension to fix and enable media playback for [Berriz](https://berriz.in) on PC.  
-一個用於在電腦上修復並啟用 [Berriz](https://berriz.in) 媒體播放的瀏覽器擴充功能。
+一個用於在電腦上修復並啟用 [Berriz](https://berriz.in) 媒體播放的瀏覽器擴充功能
 
 ### Watch DEMO on Youtube
 [![IDEMO](https://img.youtube.com/vi/_0-SOj9Z_U4/maxresdefault.jpg)](https://www.youtube.com/watch?v=_0-SOj9Z_U4)
@@ -47,8 +47,6 @@ A browser extension to fix and enable media playback for [Berriz](https://berriz
 4. Select `manifest.json` inside the unzipped folder  
    選取資料夾中的 `manifest.json` 檔案
 
-> 📌 *Note: “測載” 是 Firefox 中文介面的「暫時載入附加元件」功能*  
-
 ---
 
 ## 💡 Features｜功能特色
@@ -81,4 +79,5 @@ This project is licensed under the **GNU General Public License v3.0**.
 本專案採用 **GNU GPL v3.0** 授權。
 
 See the full license text in [LICENSE](LICENSE) or [choosealicense.com/gpl-3.0](https://choosealicense.com/licenses/gpl-3.0/)  
-詳細條款請參見 [LICENSE](LICENSE) 或 [choosealicense.com/gpl-3.0](https://choosealicense.com/licenses/gpl-3.0/)
+詳細條款請參見 [LICENSE](LICENSE) 
+[choosealicense.com/gpl-3.0](https://choosealicense.com/licenses/gpl-3.0/)
