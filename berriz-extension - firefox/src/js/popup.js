@@ -136,6 +136,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     return navigator.language.toLowerCase();
   }
 
+  // 在 DOMContentLoaded 事件監聽器中添加
+  // ...existing DOM elements...
+
   // 載入擴展啟用狀態並初始化開關
   try {
     const storageData = await browser.storage.local.get("isExtensionActive");

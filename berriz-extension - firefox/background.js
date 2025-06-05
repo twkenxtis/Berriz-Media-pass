@@ -181,38 +181,36 @@ async function fetchMediaInfo({ uuid, apiEndpoint, titleEndpoint }) {
       },
     });
 
+    // 檢查 401 未授權錯誤
     if (response.status === 401) {
       throw new Error("401 Unauthorized: Please refresh the page");
     }
-
+    // 檢查其他 HTTP 錯誤
     if (!response.ok) {
       throw new Error(`API request failed with status ${response.status}`);
     }
-
     const data = await response.json();
     console.debug(`API 響應 (${uuid}):`, data);
-
-    // 粉絲俱樂部限定
+    // 檢查粉絲俱樂部限制
     if (data.code === "FS_MD9010") {
       const err = new Error("FANCLUB_ONLY");
       err.code = data.code;
       err.type = "FANCLUB_ONLY";
       err.messages = {
-        title: "fanclub_only",
-        message: "fanclub_message",
+        title: "fanclub_only", // 對應語言文件中的 key
+        message: "fanclub_message", // 對應語言文件中的 key
       };
       throw err;
     }
-
-    // 一般錯誤處理
+    // 檢查一般 API 響應代碼
     if (data.code !== "0000" || !data.data) {
       throw new Error(`API response: ${data.code}`);
     }
-
     const media =
       data.data.media?.live?.replay || data.data.vod || data.data.media;
-    if (!media) return;
-
+    if (!media) {
+      return; // 直接返回，不更新快取
+    }
     let resolvedTitle = uuid;
     if (titleEndpoint) {
       const titleResponse = await fetch(titleEndpoint, {
@@ -227,14 +225,14 @@ async function fetchMediaInfo({ uuid, apiEndpoint, titleEndpoint }) {
       }
     }
 
-    const mediaTitle = data.data.media?.title || null;
+    let mediaTitle = data.data.media?.title || null;
     const playbackData = {
       isDrm: !!media.isDrm,
       hls: [],
       dash: [],
       hlsVariants: media.hls?.adaptationSet || [],
       timestamp: Date.now(),
-      title: mediaTitle || resolvedTitle || "載入中...",
+      title: mediaTitle || resolvedTitle || "載入中...", // 使用更友好的預設值
     };
 
     if (!media.isDrm) {
@@ -243,7 +241,6 @@ async function fetchMediaInfo({ uuid, apiEndpoint, titleEndpoint }) {
     }
 
     updateCache(uuid, playbackData);
-
     console.log(`播放資料已更新 (${uuid}):`, playbackData);
   } catch (error) {
     handleFetchError(uuid, error);
@@ -447,6 +444,14 @@ async function checkBerrizUrl(url, tabId) {
     throw error;
   }
 }
+
+// 事件監聽器
+browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  if (changeInfo.url) {
+    console.log(`標籤頁更新: ${changeInfo.url}`);
+    checkBerrizUrl(changeInfo.url, tabId);
+  }
+});
 
 browser.storage.onChanged.addListener((changes, namespace) => {
   if (namespace === "local" && changes.isExtensionActive !== undefined) {
