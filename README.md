@@ -71,7 +71,7 @@ For the best Firefox installation experience, we recommend using the **Community
 
 ### 🔹 Method 2: Install via Firefox Add-ons Marketplace | 方法二：通過 Firefox 應用商城安裝
 
-We are currently preparing to list Berriz-Media-Pass on the Firefox Add-ons Marketplace. Soon, you'll be able to simply search and click "Install" to add the extension, eliminating the need for manual download and unzipping. | 我們正在著手將此擴展上架至 Firefox 官方的擴展商城（Add-ons），屆時只需搜尋後點擊「安裝」即可，無需手動下載與解壓縮 ZIP 檔案。
+I m currently preparing to list Berriz-Media-Pass on the Firefox Add-ons Marketplace. Soon, you'll be able to simply search and click "Install" to add the extension, eliminating the need for manual download and unzipping. | 我正在著手將此擴展上架至 Firefox 官方的擴展商城（Add-ons），屆時只需搜尋後點擊「安裝」即可，無需手動下載與解壓縮 ZIP 檔案
 
 ---
 
