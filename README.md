@@ -77,8 +77,8 @@ I m currently preparing to list Berriz-Media-Pass on the Firefox Add-ons Marketp
 
 ## 🔎 Additional Information
 
-* **Version Selection:** For direct installation and to avoid extension signing restrictions, we recommend using the **Community Edition** or **Official ESR Nightly version** of Firefox. | 為避免受限於擴展簽名，請優先選擇 **社區版** 或 **官方 ESR Nightly 版本** 直接安裝擴展。
-* **Updates & Support:** Stay informed about the latest updates and improvements by following our **GitHub Releases** and **Firefox Add-ons** pages. | 請關注我們的 **GitHub Releases** 與 **Firefox Add-ons** 頁面，以獲取最新功能更新與修正說明。
+* **Version Selection:** For direct installation and to avoid extension signing restrictions, recommend using the **Community Edition** or **Official ESR Nightly version** of Firefox. | 為避免受限於擴展簽名，請優先選擇 **社區版** 或 **官方 ESR Nightly 版本** 直接安裝擴展。
+* **Updates & Support:** Stay informed about the latest updates and improvements by following our **GitHub Releases** and **Firefox Add-ons** pages. | 請關注我的 **GitHub Releases** 與 **Firefox Add-ons** 頁面，以獲取最新功能更新與修正說明。
 
 ---
 
