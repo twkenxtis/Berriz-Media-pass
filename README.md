@@ -6,7 +6,11 @@ Berriz-Media-Pass is a browser extension designed to fix and enable media playba
 
 ## 🎬 Watch the Demo | 觀看示範影片
 
-👉 [**點擊觀看 DEMO 影片 (Hosted on GitHub)**](https://github.com/twkenxtis/Berriz-Media-pass/blob/main/demo/2025-06-04%2017-02-01.mp4)
+<iframe width="720" height="405" src="http://www.youtube.com/watch?v=_0-SOj9Z_U4"
+        title="Berriz I want watch video on pc DEMO" frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerpolicy="strict-origin-when-cross-origin" allowfullscreen>
+</iframe>
 
 ---
 
@@ -98,4 +102,4 @@ We are currently preparing to list Berriz-Media-Pass on the Firefox Add-ons Mark
 
 This project is proudly licensed under the **GNU General Public License v3.0**. | 本專案採用 **GNU GPL v3.0** 授權。
 
-For the full license text, please refer to the [LICENSE](LICENSE) file or visit [choosealicense.com/licenses/gpl-3.0](https://choosealicense.com/licenses/gpl-3.0/). | 詳細授權條款請參見 [LICENSE](LICENSE) 或 [choosealicense.com/gpl-3.0](https://choosealicense.com/licenses/gpl-3.0/)
+For the full license text, please refer to the [LICENSE](LICENSE) file or visit [choosealicense.com/licenses/gpl-3.0](https://choosealicense.com/licenses/gpl-3.0/). | 詳細授權條款請參見 [LICENSE](LICENSE) 或 [choosealicense.com/licenses/gpl-3.0](https://choosealicense.com/licenses/gpl-3.0/)
