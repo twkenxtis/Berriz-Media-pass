@@ -1,5 +1,5 @@
 body {
-  width: 7400px;
+  width: 100%;
   max-width: 780px;
   padding: 13px; /* 增加整體留白 */
   font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif; /* 保持通用字體 */
