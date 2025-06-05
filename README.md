@@ -4,11 +4,13 @@ Berriz-Media-Pass is a browser extension designed to fix and enable media playba
 
 ---
 
-## 🎬 Watch the Demo
+## 🎬 Watch the Demo | 觀看示範影片
 
-Get a Berriz-Media-Pass in action!
-
-[![DEMO](https://img.youtube.com/vi/_0-SOj9Z_U4/maxresdefault.jpg)](https://www.youtube.com/watch?v=_0-SOj9Z_U4)
+<iframe width="720" height="405" src="https://www.youtube.com/embed/YOUR_YOUTUBE_VIDEO_ID" 
+        title="Berriz-Media-Pass Demo" frameborder="0" 
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+        referrerpolicy="strict-origin-when-cross-origin" allowfullscreen>
+</iframe>
 
 ---
 
