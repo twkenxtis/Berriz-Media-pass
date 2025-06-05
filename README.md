@@ -1,13 +1,14 @@
 # Berriz-Media-Pass: Seamless Media Playback on Berriz
-## Berriz-Media-Pass：順暢無縫的 Berriz 媒體播放 
-## Berrizでシームレスなメディア再生
-## Berriz에서 매끄러운 미디어 재생
+#### Berriz-Media-Pass：順暢無縫的 Berriz 媒體播放 
+#### Berrizでシームレスなメディア再生
+#### Berriz에서 매끄러운 미디어 재생
 Berriz-Media-Pass is a browser extension designed to fix and enable media playback on PC for [Berriz](https://berriz.in). Whether you're using Chrome or Firefox, this extension ensures you can enjoy your favorite content without interruption.
 
 ---
 
 ## 🎬 Watch the Demo | 觀看示範影片
 ![DEMO](https://github.com/twkenxtis/Berriz-Media-pass/blob/main/demo/0606.gif)
+![DEMO](https://github.com/twkenxtis/Berriz-Media-pass/blob/main/demo/0606_autoskip.gif)
 ---
 
 ## 📸 Demo Screenshots | 示範畫面
