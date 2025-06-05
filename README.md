@@ -38,7 +38,7 @@ Berriz-Media-Pass is a browser extension designed to fix and enable media playba
 
 Ready to enhance your Berriz experience?
 
-👉 [**Download from GitHub Releases (v1.0)**](https://github.com/twkenxtis/Berriz-Media-pass/releases/) | **從 GitHub Releases 頁面下載 (v1.0)**
+👉 [**Download from GitHub Releases (v1.0.0)**](https://github.com/twkenxtis/Berriz-Media-pass/releases/) | **從 GitHub Releases 頁面下載 (v1.0.0)**
 
 ---
 
