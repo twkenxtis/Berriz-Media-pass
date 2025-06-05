@@ -171,10 +171,7 @@ async function fetchMediaInfo({ uuid, apiEndpoint, titleEndpoint }) {
   }
 
   try {
-    // 獲取 cookie header
     const cookieHeader = await getCookies();
-
-    // 發送 API 請求
     const response = await fetch(apiEndpoint, {
       headers: {
         Cookie: cookieHeader,
@@ -184,20 +181,37 @@ async function fetchMediaInfo({ uuid, apiEndpoint, titleEndpoint }) {
       },
     });
 
+    // 檢查 401 未授權錯誤
     if (response.status === 401) {
       throw new Error("401 Unauthorized: Please refresh the page");
     }
-
+    // 檢查其他 HTTP 錯誤
     if (!response.ok) {
-      throw new Error(`API 請求失敗: ${response.status}`);
+      throw new Error(`API request failed with status ${response.status}`);
     }
-
     const data = await response.json();
-    if (data.code !== "0000" || !data.data) {
-      throw new Error("無效的 API 響應");
+    console.debug(`API 響應 (${uuid}):`, data);
+    // 檢查粉絲俱樂部限制
+    if (data.code === "FS_MD9010") {
+      const err = new Error("FANCLUB_ONLY");
+      err.code = data.code;
+      err.type = "FANCLUB_ONLY";
+      err.messages = {
+        title: "fanclub_only", // 對應語言文件中的 key
+        message: "fanclub_message", // 對應語言文件中的 key
+      };
+      throw err;
     }
-
-    let title = uuid;
+    // 檢查一般 API 響應代碼
+    if (data.code !== "0000" || !data.data) {
+      throw new Error(`API response: ${data.code}`);
+    }
+    const media =
+      data.data.media?.live?.replay || data.data.vod || data.data.media;
+    if (!media) {
+      return; // 直接返回，不更新快取
+    }
+    let resolvedTitle = uuid;
     if (titleEndpoint) {
       const titleResponse = await fetch(titleEndpoint, {
         headers: {
@@ -207,19 +221,18 @@ async function fetchMediaInfo({ uuid, apiEndpoint, titleEndpoint }) {
       });
       if (titleResponse.ok) {
         const titleData = await titleResponse.json();
-        title = titleData.data?.title || uuid;
+        resolvedTitle = titleData.data?.title || uuid;
       }
     }
 
-    const media =
-      data.data.media?.live?.replay || data.data.vod || data.data.media;
+    let mediaTitle = data.data.media?.title || null;
     const playbackData = {
       isDrm: !!media.isDrm,
       hls: [],
       dash: [],
       hlsVariants: media.hls?.adaptationSet || [],
       timestamp: Date.now(),
-      title,
+      title: mediaTitle || resolvedTitle || "載入中...",
     };
 
     if (!media.isDrm) {
@@ -231,6 +244,11 @@ async function fetchMediaInfo({ uuid, apiEndpoint, titleEndpoint }) {
     console.log(`播放資料已更新 (${uuid}):`, playbackData);
   } catch (error) {
     handleFetchError(uuid, error);
+    if (!error.message.includes("media is undefined")) {
+      handleFetchError(uuid, error);
+    } else {
+      console.debug(`跳過(${uuid})可能是Youtube page`);
+    }
   }
 }
 
@@ -250,6 +268,11 @@ function updateCache(uuid, data) {
 
 // 錯誤處理
 function handleFetchError(uuid, error) {
+  if (!langData || !langData.fanclub_only) {
+    console.error("Language data not loaded yet.");
+    return;
+  }
+
   const errorEntry = {
     isDrm: null,
     hls: [],
@@ -257,8 +280,15 @@ function handleFetchError(uuid, error) {
     error: {
       message: error.message || String(error),
       code: error.code || null,
+      type: error.type || null,
       isMissingCookies: error.code === "MISSING_COOKIES",
-      fanclubOnly: error.code === "FS_MD9010",
+      fanclubOnly:
+        error.type === "FANCLUB_ONLY"
+          ? {
+              title: langData.fanclub_only.title,
+              message: langData.fanclub_only.message,
+            }
+          : null,
       stack: error.stack || null,
       missingCookies: error.missingCookies || null,
     },
@@ -267,10 +297,44 @@ function handleFetchError(uuid, error) {
   };
 
   playbackCache.set(uuid, errorEntry);
-  console.error(`獲取媒體資訊失敗 (${uuid}):`, error.message || error);
+
+  // Log appropriate message based on error type
+  if (error.type === "FANCLUB_ONLY") {
+    console.error(`獲取媒體資訊失敗 (${uuid}): ${langData.fanclub_only.title}`);
+  } else {
+    console.error(`獲取媒體資訊失敗 (${uuid}):`, error.message || error);
+  }
+
+  // Create and update mediaDiv element
+  const mediaDiv = document.createElement("div");
+  mediaDiv.className = "media-item";
+  mediaDiv.id = uuid; // Ensure mediaDiv's id matches the uuid
+  if (uuid && mediaDiv.id === uuid) {
+    mediaDiv.classList.add("current");
+  }
+
+  if (error.fanclubOnly) {
+    const titleEl = document.createElement("h3");
+    titleEl.textContent = error.fanclubOnly.title;
+
+    const messageEl = document.createElement("p");
+    messageEl.textContent = error.fanclubOnly.message;
+
+    const errorContent = document.createElement("div");
+    errorContent.className = "error-content";
+    errorContent.appendChild(titleEl);
+    errorContent.appendChild(messageEl);
+
+    mediaDiv.appendChild(errorContent);
+  } else {
+    // Handle other errors
+    mediaDiv.textContent = error.message || "未知錯誤";
+  }
+
+  // Append mediaDiv to the document
+  document.body.appendChild(mediaDiv);
 }
 
-// 修改 checkBerrizUrl 函數
 async function checkBerrizUrl(url, tabId) {
   if (!isExtensionActive) {
     await browser.browserAction.setBadgeText({ text: "", tabId });
@@ -278,7 +342,6 @@ async function checkBerrizUrl(url, tabId) {
   }
 
   try {
-    // 提前檢查 cookies
     await getCookies();
 
     let mediaInfo = null;
@@ -314,6 +377,56 @@ async function checkBerrizUrl(url, tabId) {
       if (!cached || Date.now() - cached.timestamp > CONFIG.CACHE_TIMEOUT) {
         console.log(`獲取媒體資訊，UUID: ${mediaInfo.uuid}`);
         await fetchMediaInfo(mediaInfo);
+
+        // 如果需要獲取標題
+        if (mediaInfo.titleEndpoint && (!cached || !cached.title)) {
+          try {
+            const cookieHeader = await getCookies();
+            const titleResponse = await fetch(mediaInfo.titleEndpoint, {
+              headers: {
+                Cookie: cookieHeader,
+                "Content-Type": "application/json",
+                "User-Agent":
+                  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+              },
+            });
+
+            if (titleResponse.ok) {
+              const titleData = await titleResponse.json();
+              if (titleData.code === "0000" && titleData.data?.media?.title) {
+                const title = titleData.data.media.title;
+                // 嘗試解碼標題中的 Unicode
+                try {
+                  const decodedTitle = decodeURIComponent(
+                    title.replace(/\\u[\dA-F]{4}/gi, (match) =>
+                      String.fromCharCode(
+                        parseInt(match.replace(/\\u/g, ""), 16)
+                      )
+                    )
+                  );
+
+                  // 更新快取中的標題
+                  const currentCache = playbackCache.get(mediaInfo.uuid);
+                  if (currentCache) {
+                    currentCache.title = decodedTitle;
+                    playbackCache.set(mediaInfo.uuid, currentCache);
+                    console.log(
+                      `標題已更新 (${mediaInfo.uuid}):`,
+                      decodedTitle
+                    );
+                  }
+                } catch (e) {
+                  console.warn(`解碼標題失敗 (${mediaInfo.uuid}):`, e.message);
+                }
+              }
+            }
+          } catch (titleError) {
+            console.warn(
+              `獲取標題失敗 (${mediaInfo.uuid}):`,
+              titleError.message
+            );
+          }
+        }
       }
       return mediaInfo.uuid;
     }
