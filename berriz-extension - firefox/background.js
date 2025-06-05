@@ -1,199 +1,180 @@
-// 跨浏览器兼容的 API 选择
-const browserAPI = typeof browser !== "undefined" ? browser : chrome;
-const actionAPI = browserAPI.action || browserAPI.browserAction;
+// Firefox 擴展背景腳本 (Manifest V2)
 
-console.log("Background.js loaded");
+const CONFIG = {
+  CACHE_SIZE: 7,
+  CACHE_TIMEOUT: 30000, // 30 seconds
+  API_BASE: "https://svc-api.berriz.in/service/v1/medias",
+  REQUIRED_COOKIES: ["bz_a", "bz_r", "pacode", "pcid"], // Changed from paccode to pacode
+};
 
-// 初始化扩展状态
+// URL 匹配模式
+const URL_PATTERNS = {
+  replay:
+    /^https:\/\/berriz\.in\/[a-z]{2}\/[^/]+\/live\/replay\/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$/i,
+  media:
+    /^https:\/\/berriz\.in\/[a-z]{2}\/[^/]+\/(?:media\/content\/)+([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$/i,
+};
+
+// 全局狀態
 let isExtensionActive = true;
 let playbackCache = new Map();
 
-// 加载扩展状态并设置图标
+console.log("背景腳本已載入");
+
+// 載入擴展狀態並更新圖標
 async function loadExtensionStateAndSetIcon() {
   try {
-    const storageData = await new Promise((resolve) => {
-      browserAPI.storage.local.get("isExtensionActive", resolve);
-    });
-
-    isExtensionActive =
-      storageData.isExtensionActive !== undefined
-        ? storageData.isExtensionActive
-        : true;
-
-    console.log("Initial extension active state:", isExtensionActive);
-    updateExtensionIcon();
+    const storageData = await browser.storage.local.get("isExtensionActive");
+    isExtensionActive = storageData.isExtensionActive ?? true;
+    console.log("初始擴展狀態:", isExtensionActive);
+    await updateExtensionIcon();
   } catch (error) {
-    console.error("Error loading extension state:", error);
+    console.error("載入擴展狀態時出錯:", error);
     isExtensionActive = true;
-    updateExtensionIcon();
+    await updateExtensionIcon();
   }
 }
 
-// 更新扩展图标状态
-function updateExtensionIcon() {
-  const iconPaths = {
-    active: {
-      32: "assets/icons/berry32.png",
-      128: "assets/icons/berry256.png",
+// 更新擴展圖標
+async function updateExtensionIcon() {
+  const iconState = isExtensionActive ? "" : "_disabled";
+  await browser.browserAction.setIcon({
+    path: {
+      32: `assets/icons/berry32${iconState}.png`,
+      128: `assets/icons/berry256${iconState}.png`,
     },
-    inactive: {
-      32: "assets/icons/berry32_disabled.png",
-      128: "assets/icons/berry256_disabled.png",
-    },
-  };
-
-  const iconSet = isExtensionActive ? iconPaths.active : iconPaths.inactive;
-
-  actionAPI.setIcon({ path: iconSet });
-  actionAPI.setBadgeText({ text: "" });
+  });
+  await browser.browserAction.setBadgeText({ text: "" });
 }
 
-// 测试获取 cookies (调试用)
-function testCookies() {
-  if (browserAPI.cookies.getAll) {
-    // Firefox 风格
-    browserAPI.cookies
-      .getAll({ url: "https://berriz.in" })
-      .then((cookies) => console.log("All cookies for berriz.in:", cookies))
-      .catch((error) => console.error("Failed to get cookies:", error));
-  } else {
-    // Chrome 风格
-    browserAPI.cookies.getAll({ url: "https://berriz.in" }, (cookies) => {
-      if (browserAPI.runtime.lastError) {
-        console.error("Failed to get cookies:", browserAPI.runtime.lastError);
-      } else {
-        console.log("All cookies for berriz.in:", cookies);
-      }
+async function getCookies() {
+  try {
+    console.debug("Checking cookies for domain .berriz.in");
+
+    // Try to get all cookies first to debug
+    const allCookies = await browser.cookies.getAll({
+      domain: "berriz.in",
     });
+    console.debug(
+      "Found cookies:",
+      allCookies.map((c) => c.name)
+    );
+
+    // Get required cookies
+    const cookies = await Promise.all(
+      CONFIG.REQUIRED_COOKIES.map((name) =>
+        browser.cookies.get({
+          url: "https://berriz.in",
+          name,
+          firstPartyDomain: "",
+        })
+      )
+    );
+
+    // Filter and validate cookies
+    const validCookies = cookies.filter(Boolean);
+    if (validCookies.length !== CONFIG.REQUIRED_COOKIES.length) {
+      const missingCookies = CONFIG.REQUIRED_COOKIES.filter(
+        (name, index) => !cookies[index]
+      );
+      console.debug("Missing cookies:", missingCookies);
+      console.debug(
+        "Available cookies:",
+        validCookies.map((c) => c.name)
+      );
+
+      const error = new Error(
+        "Required cookies not found. Please ensure you are logged into berriz.in."
+      );
+      error.code = "MISSING_COOKIES";
+      error.missingCookies = missingCookies;
+      throw error;
+    }
+
+    const cookieHeader = validCookies
+      .map((cookie) => `${cookie.name}=${cookie.value}`)
+      .join("; ");
+
+    return cookieHeader;
+  } catch (error) {
+    console.error("Failed to get cookies:", error);
+    throw error;
   }
 }
 
-// 初始化
-loadExtensionStateAndSetIcon();
-testCookies();
-
-// 监听存储变化
-browserAPI.storage.onChanged.addListener((changes, namespace) => {
-  if (namespace === "local" && changes.isExtensionActive !== undefined) {
-    isExtensionActive = changes.isExtensionActive.newValue;
-    console.log("Extension active state changed to:", isExtensionActive);
-    updateExtensionIcon();
-  }
-});
-
-// 监听标签页更新
-browserAPI.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-  if (!isExtensionActive) return;
-
-  if (changeInfo.url) {
-    console.log(`Tab updated: ${changeInfo.url}`);
-    checkBerrizUrl(changeInfo.url, tabId);
-  }
-});
-
-// 检查 Berriz URL
-function checkBerrizUrl(url, tabId) {
+async function checkBerrizUrl(url, tabId) {
   if (!isExtensionActive) {
-    actionAPI.setBadgeText({ text: "", tabId });
-    return;
+    await browser.browserAction.setBadgeText({ text: "", tabId });
+    return null;
   }
 
-  const replayPattern =
-    /^https:\/\/berriz\.in\/[a-z]{2}\/[^/]+\/live\/replay\/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$/i;
-  const mediaPattern =
-    /^https:\/\/berriz\.in\/[a-z]{2}\/[^/]+\/(?:media\/content\/)+([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$/i;
+  try {
+    // 提前檢查 cookies
+    await getCookies();
 
-  let uuid = null;
-  let apiEndpoint = null;
-  let titleEndpoint = null;
-
-  if (replayPattern.test(url)) {
-    uuid = url.match(replayPattern)[1];
-    apiEndpoint = `https://svc-api.berriz.in/service/v1/medias/live/replay/${uuid}/playback_area_context`;
-  } else if (mediaPattern.test(url)) {
-    uuid = url.match(mediaPattern)[1];
-    apiEndpoint = `https://svc-api.berriz.in/service/v1/medias/${uuid}/playback_info`;
-    titleEndpoint = `https://svc-api.berriz.in/service/v1/medias/${uuid}/public_context`;
-  }
-
-  if (uuid && apiEndpoint) {
-    actionAPI.setBadgeText({ text: "!", tabId });
-    actionAPI.setBadgeBackgroundColor({ color: "#FF5252", tabId });
-
-    if (!playbackCache.has(uuid)) {
-      console.log(`Fetching media info for UUID: ${uuid}`);
-      fetchMediaInfo(uuid, apiEndpoint, titleEndpoint);
+    let mediaInfo = null;
+    for (const [type, pattern] of Object.entries(URL_PATTERNS)) {
+      const match = url.match(pattern);
+      if (match) {
+        const uuid = match[1];
+        mediaInfo = {
+          uuid,
+          type,
+          apiEndpoint: `${CONFIG.API_BASE}/${
+            type === "replay" ? "live/replay/" : ""
+          }${uuid}/${
+            type === "replay" ? "playback_area_context" : "playback_info"
+          }`,
+          titleEndpoint:
+            type === "media"
+              ? `${CONFIG.API_BASE}/${uuid}/public_context`
+              : null,
+        };
+        break;
+      }
     }
-  } else {
-    actionAPI.setBadgeText({ text: "", tabId });
+
+    if (mediaInfo) {
+      await browser.browserAction.setBadgeText({ text: "!", tabId });
+      await browser.browserAction.setBadgeBackgroundColor({
+        color: "#FF5252",
+        tabId,
+      });
+
+      const cached = playbackCache.get(mediaInfo.uuid);
+      if (!cached || Date.now() - cached.timestamp > CONFIG.CACHE_TIMEOUT) {
+        console.log(`獲取媒體資訊，UUID: ${mediaInfo.uuid}`);
+        await fetchMediaInfo(mediaInfo);
+      }
+      return mediaInfo.uuid;
+    }
+
+    await browser.browserAction.setBadgeText({ text: "", tabId });
+    return null;
+  } catch (error) {
+    if (error.code === "MISSING_COOKIES") {
+      await browser.browserAction.setBadgeText({ text: "⚠", tabId });
+      await browser.browserAction.setBadgeBackgroundColor({
+        color: "#FFA500",
+        tabId,
+      });
+    }
+    throw error;
   }
 }
 
-// 处理消息
-browserAPI.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.action === "getPlaybackCache") {
-    sendResponse({ cache: Array.from(playbackCache.entries()) });
-  } else if (request.action === "clearPlaybackCache") {
-    playbackCache.clear();
-    console.log("Playback cache cleared");
-    sendResponse({ success: true });
-  } else if (request.action === "deletePlaybackCacheItem") {
-    const uuidToDelete = request.uuid;
-    if (playbackCache.has(uuidToDelete)) {
-      playbackCache.delete(uuidToDelete);
-      console.log(`Playback cache item deleted: ${uuidToDelete}`);
-      sendResponse({ success: true });
-    } else {
-      sendResponse({ success: false, message: "Item not found in cache." });
-    }
-  }
-  return true; // 保持消息端口开放以支持异步响应
-});
-
-// 获取媒体信息
-async function fetchMediaInfo(uuid, apiEndpoint, titleEndpoint) {
+// 獲取媒體資訊
+async function fetchMediaInfo({ uuid, apiEndpoint, titleEndpoint }) {
   if (!isExtensionActive) {
     console.log("Extension disabled, skipping fetchMediaInfo.");
     return;
   }
 
   try {
-    // 获取 cookies
-    const cookieNames = ["bz_a", "bz_r", "paccode", "pcid"];
-    const cookies = await Promise.all(
-      cookieNames.map(
-        (name) =>
-          new Promise((resolve) => {
-            browserAPI.cookies.get(
-              { url: "https://berriz.in", name },
-              (cookie) => {
-                if (browserAPI.runtime.lastError) {
-                  console.error(
-                    `Error getting cookie ${name}:`,
-                    browserAPI.runtime.lastError
-                  );
-                  resolve(null);
-                } else {
-                  resolve(cookie);
-                }
-              }
-            );
-          })
-      )
-    );
+    // 獲取 cookie header
+    const cookieHeader = await getCookies();
 
-    const cookieHeader = cookies
-      .filter((cookie) => cookie)
-      .map((cookie) => `${cookie.name}=${cookie.value}`)
-      .join("; ");
-
-    if (!cookieHeader) {
-      throw new Error(
-        "Required cookies not found. Please ensure you are logged into berriz.in."
-      );
-    }
-
-    // 获取播放信息
+    // 發送 API 請求
     const response = await fetch(apiEndpoint, {
       headers: {
         Cookie: cookieHeader,
@@ -203,124 +184,201 @@ async function fetchMediaInfo(uuid, apiEndpoint, titleEndpoint) {
       },
     });
 
-    if (response.status === 401)
+    if (response.status === 401) {
       throw new Error("401 Unauthorized: Please refresh the page");
-    if (!response.ok)
-      throw new Error(`API request failed with status ${response.status}`);
+    }
+
+    if (!response.ok) {
+      throw new Error(`API 請求失敗: ${response.status}`);
+    }
 
     const data = await response.json();
-
-    if (data.code === "FS_MD9010") {
-      const err = new Error(data.code);
-      err.code = data.code;
-      err.type = "FANCLUB_ONLY";
-      throw err;
+    if (data.code !== "0000" || !data.data) {
+      throw new Error("無效的 API 響應");
     }
 
-    if (data.code !== "0000" || !data.data)
-      throw new Error("INVALID_API_RESPONSE");
-
-    // 处理响应
-    let media = null;
-    let title = null;
-
-    if (apiEndpoint.includes("live/replay")) {
-      media = data.data.media?.live?.replay || data.data.media;
-      title = data.data.media?.title || null;
-    } else {
-      media = data.data.vod || data.data.media;
-    }
-
-    if (!media) {
-      console.error(`No valid media data found for UUID ${uuid}`);
-      return;
-    }
-
-    // 获取标题（如果需要）
+    let title = uuid;
     if (titleEndpoint) {
-      try {
-        const titleResponse = await fetch(titleEndpoint, {
-          headers: {
-            Cookie: cookieHeader,
-            "Content-Type": "application/json",
-            "User-Agent":
-              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-          },
-        });
-
-        if (titleResponse.ok) {
-          const titleData = await titleResponse.json();
-          if (titleData.code === "0000" && titleData.data?.media?.title) {
-            title = titleData.data.media.title;
-          }
-        }
-      } catch (titleError) {
-        console.warn(
-          `Failed to fetch title for UUID ${uuid}:`,
-          titleError.message
-        );
+      const titleResponse = await fetch(titleEndpoint, {
+        headers: {
+          Cookie: cookieHeader,
+          "Content-Type": "application/json",
+        },
+      });
+      if (titleResponse.ok) {
+        const titleData = await titleResponse.json();
+        title = titleData.data?.title || uuid;
       }
     }
 
-    // 解码标题
-    if (title) {
-      try {
-        title = decodeURIComponent(
-          title.replace(/\\u[\dA-F]{4}/gi, (match) =>
-            String.fromCharCode(parseInt(match.replace(/\\u/g, ""), 16))
-          )
-        );
-      } catch (e) {
-        console.warn(`Failed to decode title for UUID ${uuid}:`, e.message);
-        title = null;
-      }
-    }
-
-    // 组装播放数据
+    const media =
+      data.data.media?.live?.replay || data.data.vod || data.data.media;
     const playbackData = {
       isDrm: !!media.isDrm,
       hls: [],
       dash: [],
       hlsVariants: media.hls?.adaptationSet || [],
       timestamp: Date.now(),
-      title: title || uuid,
+      title,
     };
 
-    if (!media.isDrm && media.hls?.playbackUrl) {
-      playbackData.hls = [media.hls.playbackUrl].filter((url) => url);
-    }
-    if (!media.isDrm && media.dash?.playbackUrl) {
-      playbackData.dash = [media.dash.playbackUrl].filter((url) => url);
+    if (!media.isDrm) {
+      if (media.hls?.playbackUrl) playbackData.hls = [media.hls.playbackUrl];
+      if (media.dash?.playbackUrl) playbackData.dash = [media.dash.playbackUrl];
     }
 
-    // 更新缓存
-    playbackCache.set(uuid, playbackData);
-    if (playbackCache.size > 50) {
-      const oldestEntry = Array.from(playbackCache.entries()).reduce(
-        (oldest, current) =>
-          current[1].timestamp < oldest[1].timestamp ? current : oldest
-      );
-      playbackCache.delete(oldestEntry[0]);
-      console.log(`Removed oldest cache entry: ${oldestEntry[0]}`);
-    }
-
-    console.log(`Playback data updated (${uuid}):`, playbackData);
+    updateCache(uuid, playbackData);
+    console.log(`播放資料已更新 (${uuid}):`, playbackData);
   } catch (error) {
-    const errorEntry = {
-      isDrm: null,
-      hls: [],
-      dash: [],
-      error: {
-        message: error.message,
-        code: error.code || null,
-        type: error.type || null,
-        stack: error.stack || null,
-      },
-      timestamp: Date.now(),
-      title: uuid,
-    };
-
-    playbackCache.set(uuid, errorEntry);
-    console.error(`Failed to fetch media info (${uuid}):`, error.message);
+    handleFetchError(uuid, error);
   }
 }
+
+// 更新緩存
+function updateCache(uuid, data) {
+  playbackCache.set(uuid, data);
+
+  if (playbackCache.size > CONFIG.CACHE_SIZE) {
+    const oldestEntry = Array.from(playbackCache.entries()).reduce(
+      (oldest, current) =>
+        current[1].timestamp < oldest[1].timestamp ? current : oldest
+    );
+    playbackCache.delete(oldestEntry[0]);
+    console.log(`已移除最舊的緩存項目: ${oldestEntry[0]}`);
+  }
+}
+
+// 錯誤處理
+function handleFetchError(uuid, error) {
+  const errorEntry = {
+    isDrm: null,
+    hls: [],
+    dash: [],
+    error: {
+      message: error.message || String(error),
+      code: error.code || null,
+      isMissingCookies: error.code === "MISSING_COOKIES",
+      fanclubOnly: error.code === "FS_MD9010",
+      stack: error.stack || null,
+      missingCookies: error.missingCookies || null,
+    },
+    timestamp: Date.now(),
+    title: uuid,
+  };
+
+  playbackCache.set(uuid, errorEntry);
+  console.error(`獲取媒體資訊失敗 (${uuid}):`, error.message || error);
+}
+
+// 修改 checkBerrizUrl 函數
+async function checkBerrizUrl(url, tabId) {
+  if (!isExtensionActive) {
+    await browser.browserAction.setBadgeText({ text: "", tabId });
+    return null;
+  }
+
+  try {
+    // 提前檢查 cookies
+    await getCookies();
+
+    let mediaInfo = null;
+    for (const [type, pattern] of Object.entries(URL_PATTERNS)) {
+      const match = url.match(pattern);
+      if (match) {
+        const uuid = match[1];
+        mediaInfo = {
+          uuid,
+          type,
+          apiEndpoint: `${CONFIG.API_BASE}/${
+            type === "replay" ? "live/replay/" : ""
+          }${uuid}/${
+            type === "replay" ? "playback_area_context" : "playback_info"
+          }`,
+          titleEndpoint:
+            type === "media"
+              ? `${CONFIG.API_BASE}/${uuid}/public_context`
+              : null,
+        };
+        break;
+      }
+    }
+
+    if (mediaInfo) {
+      await browser.browserAction.setBadgeText({ text: "!", tabId });
+      await browser.browserAction.setBadgeBackgroundColor({
+        color: "#FF5252",
+        tabId,
+      });
+
+      const cached = playbackCache.get(mediaInfo.uuid);
+      if (!cached || Date.now() - cached.timestamp > CONFIG.CACHE_TIMEOUT) {
+        console.log(`獲取媒體資訊，UUID: ${mediaInfo.uuid}`);
+        await fetchMediaInfo(mediaInfo);
+      }
+      return mediaInfo.uuid;
+    }
+
+    await browser.browserAction.setBadgeText({ text: "", tabId });
+    return null;
+  } catch (error) {
+    if (error.code === "MISSING_COOKIES") {
+      await browser.browserAction.setBadgeText({ text: "⚠", tabId });
+      await browser.browserAction.setBadgeBackgroundColor({
+        color: "#FFA500",
+        tabId,
+      });
+    }
+    throw error;
+  }
+}
+
+// 事件監聽器
+browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  if (changeInfo.url) {
+    console.log(`標籤頁更新: ${changeInfo.url}`);
+    checkBerrizUrl(changeInfo.url, tabId);
+  }
+});
+
+browser.storage.onChanged.addListener((changes, namespace) => {
+  if (namespace === "local" && changes.isExtensionActive !== undefined) {
+    isExtensionActive = changes.isExtensionActive.newValue;
+    console.log("擴展狀態已變更為:", isExtensionActive);
+    updateExtensionIcon();
+  }
+});
+
+browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  switch (request.action) {
+    case "getPlaybackCache":
+      sendResponse({ cache: Array.from(playbackCache.entries()) });
+      break;
+    case "clearPlaybackCache":
+      playbackCache.clear();
+      console.log("播放緩存已清除");
+      sendResponse({ success: true });
+      break;
+    case "deletePlaybackCacheItem":
+      const success = playbackCache.delete(request.uuid);
+      console.log(`緩存項目 ${request.uuid} 刪除: ${success}`);
+      sendResponse({
+        success,
+        message: success ? "項目已刪除" : "未找到項目",
+      });
+      break;
+  }
+  return true;
+});
+
+console.log("Background script loaded");
+browser.cookies
+  .getAll({ url: "https://berriz.in" })
+  .then((cookies) => {
+    console.log("All cookies for berriz.in:", cookies);
+  })
+  .catch((error) => {
+    console.error("Failed to get cookies:", error);
+  });
+
+// 初始化擴展
+loadExtensionStateAndSetIcon();
