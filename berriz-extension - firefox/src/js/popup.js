@@ -57,20 +57,43 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Helper functions
   function showError(message) {
-    errorDiv.textContent = message;
-    errorDiv.classList.remove("hidden");
-    statusDiv.classList.add("hidden");
-    if (message.toLowerCase().includes("401 unauthorized")) {
-      refreshContainer.classList.remove("hidden");
-    } else {
-      refreshContainer.classList.add("hidden");
-    }
-    setTimeout(() => {
-      errorDiv.classList.add("hidden");
-      refreshContainer.classList.add("hidden");
-    }, 5000);
-  }
+    // Check if message is an object containing error data
+    if (
+      typeof message === "object" &&
+      message.error?.fanclubOnly &&
+      message.error.messages
+    ) {
+      errorDiv.innerHTML = ""; // Clear existing content
 
+      const titleEl = document.createElement("h3");
+      titleEl.textContent = langData[message.error.messages.title];
+      errorDiv.appendChild(titleEl);
+
+      const messageEl = document.createElement("p");
+      messageEl.textContent = langData[message.error.messages.message];
+      errorDiv.appendChild(messageEl);
+
+      errorDiv.classList.remove("hidden");
+      statusDiv.classList.add("hidden");
+      refreshContainer.classList.add("hidden");
+    } else {
+      // Original error handling
+      errorDiv.textContent = message;
+      errorDiv.classList.remove("hidden");
+      statusDiv.classList.add("hidden");
+
+      if (message.toLowerCase().includes("401 unauthorized")) {
+        refreshContainer.classList.remove("hidden");
+      } else {
+        refreshContainer.classList.add("hidden");
+      }
+
+      setTimeout(() => {
+        errorDiv.classList.add("hidden");
+        refreshContainer.classList.add("hidden");
+      }, 5000);
+    }
+  }
   function extractUuidFromUrl(url) {
     const match = url.match(/uuid=([a-zA-Z0-9-]+)/);
     return match ? match[1] : null;
@@ -112,9 +135,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
     return navigator.language.toLowerCase();
   }
-
-  // 在 DOMContentLoaded 事件監聽器中添加
-  // ...existing DOM elements...
 
   // 載入擴展啟用狀態並初始化開關
   try {
@@ -224,6 +244,29 @@ document.addEventListener("DOMContentLoaded", async () => {
     cache.forEach(([mediaId, data]) => {
       const mediaDiv = document.createElement("div");
       mediaDiv.className = "media-item";
+      if (currentUuid && mediaId === currentUuid) {
+        mediaDiv.classList.add("current");
+      }
+      if (data.error) {
+        // Handle fanclub error specifically
+        if (data.error.fanclubOnly) {
+          const titleEl = document.createElement("h3");
+          titleEl.textContent = langData[data.error.fanclubOnly.title];
+
+          const messageEl = document.createElement("p");
+          messageEl.textContent = langData[data.error.fanclubOnly.message];
+
+          const errorContent = document.createElement("div");
+          errorContent.className = "error-content";
+          errorContent.appendChild(titleEl);
+          errorContent.appendChild(messageEl);
+
+          mediaDiv.appendChild(errorContent);
+        } else {
+          // Handle other errors
+          mediaDiv.textContent = data.error.message || "Unknown error";
+        }
+      }
 
       const header = document.createElement("header");
       header.className = "media-header";
