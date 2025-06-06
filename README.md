@@ -123,4 +123,22 @@ I m currently preparing to list Berriz-Media-Pass on the Firefox Add-ons Marketp
 
 This project is proudly licensed under the **GNU General Public License v3.0**. | 本專案採用 **GNU GPL v3.0** 授權。
 
+
+## Disclaimer Notice
+
+This project is licensed under the GNU General Public License v3.0 (GPLv3).  
+It is provided solely for **personal, educational, and non-commercial use**.
+
+This extension **does not host, distribute, or alter any content** from berriz.in.  
+All copyrights and media belong to their respective owners.
+
+You are solely responsible for complying with the terms of service of any third-party platforms you use this extension with.  
+The developer of this extension is **not liable for any misuse** or legal issues resulting from unauthorized content use.
+
+本專案依據 GNU GPLv3 授權條款釋出，僅供**個人學術研究與非商業用途**使用。  
+
+本擴展程式**不主機、不傳播、不修改任何 berriz.in 平臺上的媒體內容**，其著作權均歸原作者所有。  
+
+使用者應自行遵守所連接平臺的服務條款，如有任何未經授權使用內容之行為，後果自負，開發者概不負責。
+
 For the full license text, please refer to the [LICENSE](LICENSE) file or visit [choosealicense.com/licenses/gpl-3.0](https://choosealicense.com/licenses/gpl-3.0/). | 詳細授權條款請參見 [LICENSE](LICENSE) 或 [choosealicense.com/licenses/gpl-3.0](https://choosealicense.com/licenses/gpl-3.0/)
