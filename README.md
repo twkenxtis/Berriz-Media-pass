@@ -44,13 +44,14 @@ Ready to enhance your Berriz experience?
 
 ## 🔧 Installation Guide
 
-### ✅ Chrome Users | Chrome 使用者
+### ✅ Chrome EDGE Users | Chrome EDGE 使用者
 
 1.  **Download and Unzip:** Download the ZIP file from [Releases](https://github.com/twkenxtis/Berriz-Media-pass/releases) and extract its contents. | 從 [Releases](https://github.com/twkenxtis/Berriz-Media-pass/releases) 下載並解壓縮 ZIP 檔案。
 2.  **Open Extensions Page:** Navigate to `chrome://extensions` in your browser. | 前往 `chrome://extensions`。
 3.  **Enable Developer Mode:** Toggle on "Developer mode" in the top right corner. | 啟用「開發人員模式」。
 4.  **Load Unpacked Extension:** Click **Load unpacked** and select the unzipped folder. | 點選 **Load unpacked**（載入已解壓的擴充功能），然後選取解壓後的資料夾。
 
+![install](https://github.com/twkenxtis/Berriz-Media-pass/blob/main/demo/chromium_dev_install.gif)
 ---
 
 ## 🦊 Firefox Installation Guide
@@ -67,6 +68,7 @@ For the best Firefox installation experience, we recommend using the **Community
 4.  **Load the Extension:** Click **Load Temporary Add-on**, then select the ZIP file directly. | 點選 **Load Temporary Add-on**（載入暫時附加元件），然後直接選擇 ZIP 壓縮檔。
 
 
+![install](https://github.com/twkenxtis/Berriz-Media-pass/blob/main/demo/firefox_dev_install.gif)
     > **💡 Note:** If you're using the Community Edition or ESR Nightly version, you can directly install the extension via the file without temporary installation, as these versions are not restricted by extension signing. | 如果你使用的是社區版或 ESR Nightly 版本，系統不受擴展簽名限製，可直接通過檔案安裝，無需使用臨時安裝方式。
 
 ### 🔹 Method 2: Install via Firefox Add-ons Marketplace | 方法二：通過 Firefox 應用商城安裝
