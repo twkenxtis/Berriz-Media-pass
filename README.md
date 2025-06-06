@@ -62,10 +62,10 @@ For the best Firefox installation experience, we recommend using the **Community
 ### 🔹 Method 1: Direct ZIP File Installation | 方法一：直接通過 ZIP 檔案安裝
 
 1.  **Download the ZIP file:** Get the latest version from the [Releases](https://github.com/twkenxtis/Berriz-Media-pass/releases) page. | 從 [Releases](https://github.com/twkenxtis/Berriz-Media-pass/releases) 頁面下載最新版本的 ZIP 壓縮檔。
-2.  **Unzip the File:** Extract the ZIP file to any local directory. | 將 ZIP 檔案解壓縮到本機任意目錄。
-3.  **Access Debugging Page:** Type `about:debugging` into your address bar and press Enter. | 在地址欄輸入 `about:debugging` 並按 Enter 鍵。
-4.  **Select "This Firefox":** In the left menu, click **This Firefox**. | 在左側選單中點選 **This Firefox**。
-5.  **Load the Extension:** Click **Load Temporary Add-on** and choose the `manifest.json` file from the unzipped folder. | 點選 **Load Temporary Add-on**（載入暫時附加元件），然後選擇解壓縮後的資料夾中的 `manifest.json` 檔案。
+2.  **Access Debugging Page:** Type `about:debugging` into your address bar and press Enter. | 在地址欄輸入 `about:debugging` 並按 Enter 鍵。
+3.  **Select "This Firefox":** In the left menu, click **This Firefox**. | 在左側選單中點選 **This Firefox**。
+4.  **Load the Extension:** Click **Load Temporary Add-on**, then select the ZIP file directly. | 點選 **Load Temporary Add-on**（載入暫時附加元件），然後直接選擇 ZIP 壓縮檔。
+
 
     > **💡 Note:** If you're using the Community Edition or ESR Nightly version, you can directly install the extension via the file without temporary installation, as these versions are not restricted by extension signing. | 如果你使用的是社區版或 ESR Nightly 版本，系統不受擴展簽名限製，可直接通過檔案安裝，無需使用臨時安裝方式。
 
