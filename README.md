@@ -1,4 +1,4 @@
-<img src="https://github.com/twkenxtis/Berriz-Media-pass/blob/main/berriz-extension-chrome/assets/icons/berry512.png" width="48"> <span style="font-size: 2em; font-weight: bold;">Berriz-Media-Pass: Seamless Media Playback on Berriz</span>
+<img src="https://github.com/twkenxtis/Berriz-Media-pass/blob/main/berriz-extension-chrome/assets/icons/berry512.png" width="16"> <span style="font-size: 2em; font-weight: bold;">Berriz-Media-Pass: Seamless Media Playback on Berriz</span>
 
 #### Berriz-Media-Pass：順暢無縫的 Berriz 媒體播放 
 #### Berrizでシームレスなメディア再生
