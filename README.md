@@ -79,6 +79,7 @@ For the best Firefox installation experience, we recommend using the **Community
 
 
 ![install](https://github.com/twkenxtis/Berriz-Media-pass/blob/main/demo/firefox_dev_install.gif)
+    
     > **💡 Note:** If you're using the Community Edition or ESR Nightly version, you can directly install the extension via the file without temporary installation, as these versions are not restricted by extension signing. | 如果你使用的是社區版或 ESR Nightly 版本，系統不受擴展簽名限製，可直接通過檔案安裝，無需使用臨時安裝方式。
 
 ### 🔹 Method 2: Install via Firefox Add-ons Marketplace | 方法二：通過 Firefox 應用商城安裝
