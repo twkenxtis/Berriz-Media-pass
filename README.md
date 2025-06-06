@@ -28,8 +28,13 @@ Berriz-Media-Pass is a browser extension designed to fix and enable media playba
   </div>
   <div style="flex: 1 0 250px; text-align: center;">
     <img src="demo/iu_online_play.png" alt="LIVE Player" style="max-width: 100%; height: auto;">
+    <p style="margin-top: 5px;">[Firefox BETA v1 - 1.2.3 Only] LIVE Player<br>播放介面</p>
+  </div>
+    <div style="flex: 1 0 250px; text-align: center;">
+    <img src="https://addons.mozilla.org/user-media/previews/full/322/322694.png" alt="LIVE Player" style="max-width: 100%; height: auto;">
     <p style="margin-top: 5px;">LIVE Player<br>播放介面</p>
   </div>
+</div>
 </div>
 
 ---
@@ -98,6 +103,14 @@ I m currently preparing to list Berriz-Media-Pass on the Firefox Add-ons Marketp
 ---
 
 🌎EN | JA | KO | ZCN | ZHTW More translations coming soon
+
+
+## Thanks
+
+- [Plyr Official Website](https://plyr.io/)  
+- [Dash.js GitHub Page](https://github.com/Dash-Industry-Forum/dash.js)  
+- [HLS.js GitHub Page](https://github.com/video-dev/hls.js)  
+
 
 ## 📜 License
 
