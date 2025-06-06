@@ -46,7 +46,7 @@ Ready to enhance your Berriz experience?
 
 ### ✅ Chrome EDGE Users | Chrome EDGE 使用者
 
-1.  **Download and Unzip:** Download the ZIP file from [Releases](https://github.com/twkenxtis/Berriz-Media-pass/releases) and extract its contents. | 從 [Releases](https://github.com/twkenxtis/Berriz-Media-pass/releases) 下載並解壓縮 ZIP 檔案。
+1.  **Download and Unzip:** Download the ZIP file from [Releases]([https://github.com/twkenxtis/Berriz-Media-pass/releases](https://github.com/twkenxtis/Berriz-Media-pass/releases/tag/v1.0.0-release)) and extract its contents. | 從 [Releases](https://github.com/twkenxtis/Berriz-Media-pass/releases/tag/v1.0.0-release) 下載並解壓縮 ZIP 檔案。
 2.  **Open Extensions Page:** Navigate to `chrome://extensions` in your browser. | 前往 `chrome://extensions`。
 3.  **Enable Developer Mode:** Toggle on "Developer mode" in the top right corner. | 啟用「開發人員模式」。
 4.  **Load Unpacked Extension:** Click **Load unpacked** and select the unzipped folder. | 點選 **Load unpacked**（載入已解壓的擴充功能），然後選取解壓後的資料夾。
@@ -62,7 +62,7 @@ For the best Firefox installation experience, we recommend using the **Community
 
 ### 🔹 Method 1: Direct ZIP File Installation | 方法一：直接通過 ZIP 檔案安裝
 
-1.  **Download the ZIP file:** Get the latest version from the [Releases](https://github.com/twkenxtis/Berriz-Media-pass/releases) page. | 從 [Releases](https://github.com/twkenxtis/Berriz-Media-pass/releases) 頁面下載最新版本的 ZIP 壓縮檔。
+1.  **Download the ZIP file:** Get the latest version from the [Releases]([https://github.com/twkenxtis/Berriz-Media-pass/releases](https://github.com/twkenxtis/Berriz-Media-pass/releases/tag/v1.0.0-release)) page. | 從 [Releases]([https://github.com/twkenxtis/Berriz-Media-pass/releases](https://github.com/twkenxtis/Berriz-Media-pass/releases/tag/v1.0.0-release)) 頁面下載最新版本的 ZIP 壓縮檔。
 2.  **Access Debugging Page:** Type `about:debugging` into your address bar and press Enter. | 在地址欄輸入 `about:debugging` 並按 Enter 鍵。
 3.  **Select "This Firefox":** In the left menu, click **This Firefox**. | 在左側選單中點選 **This Firefox**。
 4.  **Load the Extension:** Click **Load Temporary Add-on**, then select the ZIP file directly. | 點選 **Load Temporary Add-on**（載入暫時附加元件），然後直接選擇 ZIP 壓縮檔。
