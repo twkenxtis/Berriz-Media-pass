@@ -484,6 +484,7 @@ browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
 });
 
 console.log("Background script loaded");
+
 browser.cookies
   .getAll({ url: "https://berriz.in" })
   .then((cookies) => {
@@ -492,6 +493,14 @@ browser.cookies
   .catch((error) => {
     console.error("Failed to get cookies:", error);
   });
+
+// 傳遞擴展狀態
+browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.type === "GET_EXTENSION_STATUS") {
+    sendResponse({ isActive: isExtensionActive });
+    return true;
+  }
+});
 
 // 初始化擴展
 loadExtensionStateAndSetIcon();
