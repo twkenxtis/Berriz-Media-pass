@@ -136,10 +136,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     return navigator.language.toLowerCase();
   }
 
-  // 在 DOMContentLoaded 事件監聽器中添加
-  // ...existing DOM elements...
-
-  // 載入擴展啟用狀態並初始化開關
   try {
     const storageData = await browser.storage.local.get("isExtensionActive");
     const isExtensionActive = storageData.isExtensionActive !== false;
@@ -151,21 +147,50 @@ document.addEventListener("DOMContentLoaded", async () => {
       await browser.storage.local.set({ isExtensionActive: newState });
       console.log("擴展狀態已設置為:", newState);
 
-      if (newState) {
-        showError(langData.extension_enabled || "擴展已啟用");
-        // 立即刷新當前頁面
-        const tabs = await browser.tabs.query({
+      // 獲取所有符合 https://berriz.in/* 的標籤頁
+      const allBerrizTabs = await browser.tabs.query({
+        url: "https://berriz.in/*",
+      });
+
+      if (allBerrizTabs.length > 0) {
+        // 1. 先找出當前活動的標籤頁（優先立即刷新）
+        const currentWindowTabs = await browser.tabs.query({
           active: true,
           currentWindow: true,
         });
-        if (tabs[0]) {
-          await browser.tabs.reload(tabs[0].id);
+        const currentTab = currentWindowTabs[0];
+
+        // 2. 如果當前頁面是 berriz.in，立即刷新它
+        if (currentTab?.url?.startsWith("https://berriz.in")) {
+          await browser.tabs.reload(currentTab.id);
+          console.log("立即刷新當前活動頁面:", currentTab.url);
         }
+
+        // 3. 其他符合條件的分頁加入隊列，間隔 25ms 刷新
+        const otherTabs = allBerrizTabs.filter(
+          (tab) => tab.id !== currentTab?.id
+        );
+
+        if (otherTabs.length > 0) {
+          for (const tab of otherTabs) {
+            await new Promise((resolve) => setTimeout(resolve, 25)); // 間隔 25ms
+            await browser.tabs.reload(tab.id);
+          }
+          console.log("所有分頁刷新完成！");
+        }
+      } else {
+        pass; // 沒有符合條件的分頁，不做任何事
+      }
+
+      // 更新 UI 狀態
+      if (newState) {
+        showError(langData.extension_enabled || "擴展已啟用");
       } else {
         mediaListDiv.innerHTML = "";
         mediaCountSpan.classList.add("hidden");
         showError(langData.extension_disabled || "擴展已停用");
       }
+
       // 重新載入列表
       await fetchAndRenderMediaList();
     });
