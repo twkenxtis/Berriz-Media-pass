@@ -81,17 +81,70 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (newState) {
       showError(langData.extension_enabled || "Extension enabled.");
-      // 立即嘗試刷新當前頁面，讓 background.js 重新檢查 URL
-      browserAPI.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        if (tabs[0]) {
-          browserAPI.tabs.reload(tabs[0].id);
+
+      // 1. 先刷新當前活動的 berriz.in 頁面（如果符合條件）
+      browserAPI.tabs.query(
+        { active: true, currentWindow: true },
+        async (currentTabs) => {
+          const currentTab = currentTabs[0];
+          if (currentTab?.url?.startsWith("https://berriz.in")) {
+            await browserAPI.tabs.reload(currentTab.id);
+            console.log("立即刷新當前活動頁面:", currentTab.url);
+          }
+
+          // 2. 獲取所有符合條件的分頁（排除當前頁面）
+          browserAPI.tabs.query(
+            { url: "https://berriz.in/*" },
+            async (allBerrizTabs) => {
+              const otherTabs = allBerrizTabs.filter(
+                (tab) => tab.id !== currentTab?.id
+              );
+
+              // 3. 排隊間隔刷新其他分頁
+              if (otherTabs.length > 0) {
+                console.log(`開始排隊刷新 ${otherTabs.length} 個分頁...`);
+                for (const tab of otherTabs) {
+                  await new Promise((resolve) => setTimeout(resolve, 25)); // 間隔25ms
+                  await browserAPI.tabs.reload(tab.id);
+                  console.log("已刷新分頁:", tab.url);
+                }
+                console.log("所有分頁刷新完成！");
+              }
+            }
+          );
         }
-      });
+      );
     } else {
       showError(langData.extension_disabled || "Extension disabled.");
+
+      // 禁用時也執行相同刷新邏輯
+      browserAPI.tabs.query(
+        { active: true, currentWindow: true },
+        async (currentTabs) => {
+          const currentTab = currentTabs[0];
+          if (currentTab?.url?.startsWith("https://berriz.in")) {
+            await browserAPI.tabs.reload(currentTab.id);
+          }
+
+          browserAPI.tabs.query(
+            { url: "https://berriz.in/*" },
+            async (allBerrizTabs) => {
+              const otherTabs = allBerrizTabs.filter(
+                (tab) => tab.id !== currentTab?.id
+              );
+              if (otherTabs.length > 0) {
+                for (const tab of otherTabs) {
+                  await new Promise((resolve) => setTimeout(resolve, 25));
+                  await browserAPI.tabs.reload(tab.id);
+                }
+              }
+            }
+          );
+        }
+      );
     }
-    // 不論啟用或禁用，都重新載入列表以反映狀態變化
-    // 如果禁用，fetchAndRenderMediaList會顯示禁用訊息並清空列表
+
+    // 不論啟用或禁用，都重新載入列表
     fetchAndRenderMediaList();
   });
 
@@ -125,9 +178,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // 獨立函數來獲取並渲染媒體列表，方便在狀態變化時重新呼叫
   async function fetchAndRenderMediaList() {
-    // 在這裡不需要再次檢查 isExtensionActive，因為如果禁用，backgorund.js 不會更新 cache，
-    // 且 popup.js 已經在加載時處理了禁用狀態的 UI 顯示。
-    // 如果此處仍想顯示禁用訊息，可以這樣做：
+    // 在這裡不需要再次檢查 isExtensionActive，因為如果禁用，backgorund.js 不會更新 cache
+    // 且 popup.js 已經在加載時處理了禁用狀態的 UI 顯示
     const storageData = await browserAPI.storage.local.get("isExtensionActive");
     const currentActiveState = storageData.isExtensionActive !== false;
     if (!currentActiveState) {
@@ -189,9 +241,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     const langMap = {
       en: "en",
       "zh-tw": "zh-tw",
-      "zh-hk": "zh-tw", // 通常香港也會使用繁體中文
+      "zh-hk": "zh-tw",
       "zh-cn": "zh-cn",
-      zh: "zh-cn", // 簡體中文的通用 fallback
+      zh: "zh-cn",
       ja: "ja",
       ko: "ko",
     };
@@ -222,11 +274,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     } else {
       refreshContainer.classList.add("hidden");
     }
-    // 為了避免重複顯示，特別處理
-    // setTimeout(() => {
-    //     errorDiv.classList.add("hidden");
-    //     refreshContainer.classList.add("hidden");
-    // }, 5000);
   }
 
   function renderMediaList(cache, currentUuid) {
