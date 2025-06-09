@@ -10,9 +10,9 @@ const CONFIG = {
 // URL 匹配模式
 const URL_PATTERNS = {
   replay:
-    /^https:\/\/berriz\.in\/[a-z]{2}\/[^/]+\/live\/replay\/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$/i,
+    /^https:\/\/berriz\.in\/[a-z]{2}\/[^/]+\/live\/replay\/([0-9a-f-]{36})\/?$/i,
   media:
-    /^https:\/\/berriz\.in\/[a-z]{2}\/[^/]+\/(?:media\/content\/)+([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$/i,
+    /^https:\/\/berriz\.in\/[a-z]{2}\/[^/]+\/media\/content\/([0-9a-f-]{36})\/?$/i,
 };
 
 // 全局狀態
@@ -98,67 +98,6 @@ async function getCookies() {
     return cookieHeader;
   } catch (error) {
     console.error("Failed to get cookies:", error);
-    throw error;
-  }
-}
-
-async function checkBerrizUrl(url, tabId) {
-  if (!isExtensionActive) {
-    await browser.browserAction.setBadgeText({ text: "", tabId });
-    return null;
-  }
-
-  try {
-    // 提前檢查 cookies
-    await getCookies();
-
-    let mediaInfo = null;
-    for (const [type, pattern] of Object.entries(URL_PATTERNS)) {
-      const match = url.match(pattern);
-      if (match) {
-        const uuid = match[1];
-        mediaInfo = {
-          uuid,
-          type,
-          apiEndpoint: `${CONFIG.API_BASE}/${
-            type === "replay" ? "live/replay/" : ""
-          }${uuid}/${
-            type === "replay" ? "playback_area_context" : "playback_info"
-          }`,
-          titleEndpoint:
-            type === "media"
-              ? `${CONFIG.API_BASE}/${uuid}/public_context`
-              : null,
-        };
-        break;
-      }
-    }
-
-    if (mediaInfo) {
-      await browser.browserAction.setBadgeText({ text: "!", tabId });
-      await browser.browserAction.setBadgeBackgroundColor({
-        color: "#FF5252",
-        tabId,
-      });
-
-      const cached = playbackCache.get(mediaInfo.uuid);
-      if (!cached || Date.now() - cached.timestamp > CONFIG.CACHE_TIMEOUT) {
-        console.log(`獲取媒體資訊，UUID: ${mediaInfo.uuid}`);
-        await fetchMediaInfo(mediaInfo);
-      }
-      return mediaInfo.uuid;
-    }
-
-    await browser.browserAction.setBadgeText({ text: "", tabId });
-    return null;
-  } catch (error) {
-    if (error.code === "MISSING_COOKIES") {
-      await browser.browserAction.setBadgeText({ text: "⚠", tabId });
-      await browser.browserAction.setBadgeBackgroundColor({
-        color: "#FFA500",
-        tabId,
-      });
-    }
     throw error;
   }
 }
@@ -336,19 +275,32 @@ function handleFetchError(uuid, error) {
 }
 
 async function checkBerrizUrl(url, tabId) {
+  console.log("[checkBerrizUrl] Called with URL:", url, "Tab ID:", tabId);
+
   if (!isExtensionActive) {
+    console.log("[checkBerrizUrl] Extension is not active. Skipping.");
     await browser.browserAction.setBadgeText({ text: "", tabId });
     return null;
   }
 
   try {
+    console.log("[checkBerrizUrl] Getting cookies...");
     await getCookies();
+    console.log("[checkBerrizUrl] Cookies loaded.");
 
     let mediaInfo = null;
     for (const [type, pattern] of Object.entries(URL_PATTERNS)) {
       const match = url.match(pattern);
+      console.log(
+        `[checkBerrizUrl] Testing pattern for type '${type}':`,
+        pattern
+      );
       if (match) {
         const uuid = match[1];
+        console.log(
+          `[checkBerrizUrl] Match found! Type: ${type}, UUID: ${uuid}`
+        );
+
         mediaInfo = {
           uuid,
           type,
@@ -362,8 +314,14 @@ async function checkBerrizUrl(url, tabId) {
               ? `${CONFIG.API_BASE}/${uuid}/public_context`
               : null,
         };
+
+        console.log("[checkBerrizUrl] Constructed mediaInfo:", mediaInfo);
         break;
       }
+    }
+
+    if (!mediaInfo) {
+      console.log("[checkBerrizUrl] No matching URL pattern found.");
     }
 
     if (mediaInfo) {
