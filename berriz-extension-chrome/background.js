@@ -98,9 +98,9 @@ function checkBerrizUrl(url, tabId) {
 
   // Define regex patterns for live replay and media content
   const replayPattern =
-    /^https:\/\/berriz\.in\/[a-z]{2}\/[^/]+\/live\/replay\/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$/i;
+    /^https:\/\/berriz\.in\/[a-z]{2}\/[^/]+\/live\/replay\/([0-9a-f-]{36})\/?$/i;
   const mediaPattern =
-    /^https:\/\/berriz\.in\/[a-z]{2}\/[^/]+\/(?:media\/content\/)+([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$/i;
+    /^https:\/\/berriz\.in\/[a-z]{2}\/[^/]+\/media\/content\/([0-9a-f-]{36})\/?$/i;
 
   let uuid = null;
   let apiEndpoint = null;
