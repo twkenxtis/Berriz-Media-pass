@@ -122,6 +122,13 @@ For the best Firefox installation experience, we recommend using the **Community
 - [Dash.js GitHub Page](https://github.com/Dash-Industry-Forum/dash.js)  
 - [HLS.js GitHub Page](https://github.com/video-dev/hls.js)  
 
+## Sponsor
+
+這是自由開源軟體（授權條款：GPLv3），你可以自由使用、修改與分發
+
+如果你願意支持開發者，歡迎透過捐款協助支付 Chrome Web Store 上架費用 USD$5 🙏
+
+[![ECPAY](https://payment.ecpay.com.tw/Upload/QRCode/202107/QRCode_d9e502bf-0ea8-4cee-9057-e9d6571e5820.png)](https://p.ecpay.com.tw/6677E9C)
 
 ## 📜 License
 
