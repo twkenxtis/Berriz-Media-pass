@@ -85,8 +85,11 @@ For the best Firefox installation experience, we recommend using the **Community
 
 ### 🔹 Method 2: Install via Firefox Add-ons Marketplace | 方法二：通過 Firefox 應用商城安裝
 
-https://addons.mozilla.org/en-US/firefox/addon/berrizmediahelper/
+[![Firefox-addons](https://github.com/twkenxtis/Berriz-Media-pass/blob/main/demo/firefox-adons_screenshot.png)](https://addons.mozilla.org/en-US/firefox/addon/berrizmediahelper/)
 
+| 名稱            | 連結 |
+|---------------|------|
+| Firefox Add-ons | [Link](https://addons.mozilla.org/en-US/firefox/addon/berrizmediahelper/) |
 ---
 
 ## 🔎 Additional Information
