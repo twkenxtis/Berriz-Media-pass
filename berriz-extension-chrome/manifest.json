@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "Berriz - I want watch video on PC",
-    "version": "1.0",
+    "version": "1.1.0",
     "description": "Extracts and plays media URLs from Berriz live replay and media content pages.",
     "icons": {
         "32": "assets/icons/berry32.png",
