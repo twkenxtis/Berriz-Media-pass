@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "Berriz - I want watch video on PC",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "description": "Extracts and plays media URLs from Berriz live replay and media content pages.",
     "icons": {
         "32": "assets/icons/berry32.png",
@@ -20,7 +20,8 @@
         "storage",
         "activeTab",
         "declarativeNetRequest",
-        "*://*.berriz.in/*"
+        "*://*.berriz.in/*",
+        "scripting"
     ],
     "background": {
         "scripts": [
@@ -31,12 +32,14 @@
     "content_scripts": [
         {
             "matches": [
-                "https://*.berriz.in/*/live/replay/*",
-                "https://*.berriz.in/*/media/content/*"
+                "https://berriz.in/*",
+                "https://berriz.in/*/live/replay/*",
+                "https://berriz.in/*/media/content/*"
             ],
             "js": [
                 "content.js"
-            ]
+            ],
+            "run_at": "document_idle"
         }
     ],
     "web_accessible_resources": [
@@ -52,7 +55,7 @@
     "browser_specific_settings": {
         "gecko": {
             "id": "ken8902026@gmail.com",
-            "strict_min_version": "58.0"
+            "strict_min_version": "79.0"
         }
     }
 }
