@@ -9,6 +9,11 @@
 ## Over view
 Berriz-Media-Pass is a browser extension designed to fix and enable media playback on PC for [Berriz](https://berriz.in). Whether you're using Chrome or Firefox, this extension ensures you can enjoy your favorite content without interruption.
 
+
+## You might be interested
+> Berriz - Images Post Videos Comment Subtitles | download & Remove DRM
+https://github.com/twkenxtis/Berrizdown
+
 ---
 
 ## 🎬 Watch the Demo | 觀看示範影片
